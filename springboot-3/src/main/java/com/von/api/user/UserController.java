@@ -13,16 +13,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.von.api.enums.Messenger;
+
 import lombok.RequiredArgsConstructor;
 
-@CrossOrigin(origins = "http://localhost:3000/")
+@CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 @RestController
 public class UserController {
-    private final UserService service;
-    
-    @PostMapping("/login") 
-    public Map<?,?> login(@RequestBody Map<?,?> paramMap){
+    private final UserRepository repo;
+
+    @PostMapping("/api/login") 
+    public Map<?,?> login(@RequestBody Map<String,?> paramMap){
         Map<String, String> map = new HashMap<>();
         String userName = (String)paramMap.get("userName");
         String password = (String)paramMap.get("password");
@@ -30,6 +32,25 @@ public class UserController {
         System.out.println("로그인하는 비밀번호 : "+password);
         map.put("유저이름", userName);
         map.put("비밀번호", password);
+        return map;
+    }
+
+    @PostMapping(path = "/api/users")
+    public Map<?,?> join(@RequestBody Map<String,?> paramMap){
+
+        User newUser = repo.save(User.builder()
+        .username((String) paramMap.get("userName"))
+        .password((String) paramMap.get("password"))
+        .name((String) paramMap.get("name"))
+        .phone((String) paramMap.get("phone"))
+        .job((String) paramMap.get("job"))
+        .height(Double.parseDouble((String) paramMap.get("height")))
+        .weight(Double.parseDouble((String) paramMap.get("weight")))
+        .build()   
+        );
+        System.out.println("DB에 저장된 User 정보: "+newUser);
+        Map<String, Messenger> map = new HashMap<>(); 
+        map.put("messege", Messenger.SUCCESS);
         return map;
     }
 
@@ -86,9 +107,7 @@ public class UserController {
         Map<String, String> map = new HashMap<>();
         return map;    
 
-    // public Map<?,?> join(@RequestBody Map<?,?> paraMap){
 
-    // }
 }
 
 }

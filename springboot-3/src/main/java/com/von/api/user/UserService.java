@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.von.api.enums.Messenger;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
 public interface UserService {    
 
